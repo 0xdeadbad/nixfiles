@@ -1,9 +1,10 @@
 {
   config,
-  pkgs,
+  pkgs ? import <nixpkgs>,
   ...
 }:
 {
+  nixGL.packages = import <nixgl> { inherit pkgs; };
   home = {
     username = "garicas";
     homeDirectory = "/home/${config.home.username}";
@@ -21,47 +22,48 @@
         # cmake
         # ansible
         # dockfmt
-        containerd
+        # containerd
         # coursier
         # crosvm
         # curl
         delta
         devenv
-        discord
+        binwalk
+        # discord
         # docker
         # docker-buildx
         # docker-compose
         # deno
         fastfetch
-        file
+        # file
         # firecracker
         # firectl
         # flintlock
         glibc
-        #gtk2
-        #gtk2-x11
-        gtk3
-        gtk3-x11
-        gomodifytags
-        gore
-        gnumake
-        gparted
+        # gtk2
+        # gtk2-x11
+        # gtk3
+        # gtk3-x11
+        # gomodifytags
+        # gore
+        # gnumake
+        # gparted
         # kdiskmark
         # luajit
-        # lua-language-server
+        lua-language-server
         # metals
-        nerdctl
-        #     nerdfonts
+        # nerdctl
+        # nerdfonts
         # ninja
         # nix-snapshotter
         nix-zsh-completions
         nil
-        marksman
-        nodejs
+        # marksman
+        # nodejs
         # openfga-cli
         # opentofu
-        openssl
-        #      pinentry-tty
+        # openssl
+        # pinentry-tty
         pinentry-curses
         pinentry-rofi
         python312Full
@@ -71,15 +73,18 @@
         shellcheck
         remmina
         rustup
+        mitscheme
+        guile
+        # rust-analyzer
         # sbcl
         # scrcpy
         # semgrep
         sqlite
         # stack
         telegram-desktop
-        # terraform
-        # terraform-ls
-        # tinycc
+        terraform
+        terraform-ls
+        tinycc
         unrar
         valgrind
         wakatime-cli
@@ -89,24 +94,25 @@
         # wasm-bindgen-cli
         # wasm-tools
         # waypipe
-        wget
+        # wget
         # yaml-language-server
         # yarn
         # yazi
         # zig
         # zls
-        zlib
+        # zlib
 
         # Games | Game-dev
-        # love
+        (config.lib.nixGL.wrap pkgs.love)
+        (config.lib.nixGL.wrap pkgs.aseprite)
         # xonotic
 
         # protontricks
         # protonup
 
-        #      emacsPackages.prettier
-        #      emacsPackages.lsp-treemacs
-        #      emacsPackages.all-the-icons-nerd-fonts
+        # emacsPackages.prettier
+        # emacsPackages.lsp-treemacs
+        # emacsPackages.all-the-icons-nerd-fonts
         # nodePackages_latest.prettier
 
         # kdePackages.kdenlive
@@ -115,12 +121,12 @@
 
         # Fonts
         fira-sans
-        serious-sans
+        # serious-shanns
         noto-fonts-cjk-sans
         noto-fonts-cjk-serif
 
         glslang
-        #      shaderc
+        # shaderc
         nixpkgs-fmt
         # cljfmt
         # scalafmt
@@ -129,9 +135,11 @@
         python312Packages.pip
         python312Packages.grip
         # graphviz
-        #      ocamlPackages.ocamlformat
+        # ocamlPackages.ocamlformat
 
-        #      editorconfig
+        # editorconfig
+
+        luajit
 
         gdtoolkit_4
 
@@ -139,8 +147,8 @@
         # eclint
         # editorconfig-core-c
 
-        #      ocamlPackages.utop
-        #      ocamlPackages.stdune
+        # ocamlPackages.utop
+        # ocamlPackages.stdune
 
         nixfmt-rfc-style
 
@@ -150,6 +158,7 @@
         woeusb-ng
         ventoy-full
         qbittorrent
+        opencv
 
         # unityhub
         # lutris
@@ -161,51 +170,72 @@
         # snes9x-gtk
 
         # ollama-rocm
+        # ollama
 
-        mission-center
         mesen
         # google-chrome
         # firefox
+
+        avalonia-ilspy
+        ilspycmd
+
+        krita
+        r2modman
       ]
-      # ++ (with pkgs.dotnetCorePackages; [
-      #   sdk_8_0_1xx
-      # ])
+      ++ (with pkgs.dotnetCorePackages; [
+        sdk_8_0_1xx
+      ])
       # ++ (with dotnetPackages; [
       #   Nuget
       # ])
-      ++ (with nerd-fonts; [
-        fira-code
-        droid-sans-mono
-        sauce-code-pro
-        jetbrains-mono
-        go-mono
-        _0xproto
+      # ++ (with nerd-fonts; [
+      # fira-code
+      # droid-sans-mono
+      # sauce-code-pro
+      # jetbrains-mono
+      # go-mono
+      # _0xproto
+      #])
+      # ++ (with ocamlPackages; [
+      #   ocamlformat
+      #   ocp-indent
+      #   merlin
+      # ])
+      # ++ (with haskellPackages; [
+      #   hoogle
+      #   cabal-install
+      # ])
+      # ++ (with nodePackages_latest; [
+      #   prettier
+      # ])
+      ++ (with jetbrains; [
+        rider
+        goland
+        rust-rover
       ])
-    # ++ (with ocamlPackages; [
-    #   ocamlformat
-    #   ocp-indent
-    #   merlin
-    # ])
-    # ++ (with haskellPackages; [
-    #   hoogle
-    #   cabal-install
-    # ])
-    # ++ (with nodePackages_latest; [
-    #   prettier
-    # ])
-    # ++ (with jetbrains; [
-    #   rider
-    #   goland
-    #   rust-rover
-    # ])
-    ;
+      ++ [ (config.lib.nixGL.wrap pkgs.mission-center) ]
+      ++ [
+        fennel-ls
+        fnlfmt
+      ]
+      ++ (with luajitPackages; [
+        fennel
+      ])
+      ++ (with tree-sitter-grammars; [
+        #tree-sitter-fennel
+        tree-sitter-c-sharp
+      ]);
     keyboard = {
       layout = "br";
     };
+
     # file = {};
-    sessionVariables = {
-      STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
-    };
+    # sessionVariables = {
+    #   STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
+    # };
+
+    shell.enableZshIntegration = true;
+
     sessionPath = [
       "${config.xdg.configHome}/emacs/bin"
       "${config.home.homeDirectory}/.local/bin"
@@ -219,6 +249,7 @@
 
   manual = {
     json.enable = true;
+    manpages.enable = true;
   };
 
   services = {
@@ -235,6 +266,13 @@
   };
 
   nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    # settings.trusted-users = [ "root" "@wheel" ];
+
     # registry = {
     #   microvm = {
     #     from = {
@@ -350,6 +388,11 @@
   };
 
   programs = {
+
+    home-manager = {
+      enable = true;
+    };
+
     git = {
       enable = true;
       userEmail = "matheus.dasilva.garcias@gmail.com";
@@ -381,15 +424,18 @@
       enable = true;
       enableCompletion = true;
       enableVteIntegration = true;
-      defaultKeymap = "emacs";
-      autosuggestion = {
+      defaultKeymap = "viins";
+      syntaxHighlighting = {
         enable = true;
+      };
+      autosuggestion = {
+        enable = false;
       };
       history = {
         append = true;
       };
       historySubstringSearch = {
-        enable = true;
+        enable = false;
       };
       prezto = {
         enable = false;
@@ -410,7 +456,7 @@
       enable = true;
       clock24 = true;
       historyLimit = 10000;
-      keyMode = "emacs";
+      keyMode = "vi";
       mouse = true;
       shell = "${pkgs.zsh}/bin/zsh";
       terminal = "xterm-256color";
@@ -432,12 +478,12 @@
         bind -n M-Up select-pane -U
         bind -n M-Down select-pane -D
         # don't rename windows automatically
-        set-option -g allow-rename off
+        set-option -g allow-rename on
       '';
     };
 
     vscode = {
-      enable = true;
+      enable = false;
     };
 
     neovim = {
@@ -483,7 +529,7 @@
 
     alacritty = {
       enable = true;
-      package = pkgs.alacritty;
+      package = (config.lib.nixGL.wrap pkgs.alacritty);
       settings = {
         window = {
           decorations = "None";
@@ -609,6 +655,7 @@
     obs-studio = {
       enable = true;
       plugins = [ ];
+      package = with pkgs; (config.lib.nixGL.wrap obs-studio);
     };
 
     opam = {
@@ -707,11 +754,13 @@
 
     emacs = {
       enable = true;
-      package =
-        (import ./emacs.nix {
-          emacsdir = "${config.xdg.configHome}/emacs";
-          doomdir = "${config.xdg.configHome}/doom";
-        }).emacs;
+      package = pkgs.emacs30;
+      # package =
+      #   (import ./emacs.nix {
+      #     emacsdir = "${config.xdg.configHome}/emacs";
+      #     doomdir = "${config.xdg.configHome}/doom";
+      #     inherit pkgs;
+      #   }).emacs;
     };
   };
 }
