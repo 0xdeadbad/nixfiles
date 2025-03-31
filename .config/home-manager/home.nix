@@ -9,7 +9,7 @@
     username = "garicas";
     homeDirectory = "/home/${config.home.username}";
     stateVersion = "25.05";
-    packages =
+    packages = (
       with pkgs;
       [
         # android-tools
@@ -29,12 +29,14 @@
         delta
         devenv
         binwalk
+        bat
         # discord
         # docker
         # docker-buildx
         # docker-compose
         # deno
         fastfetch
+        neofetch
         # file
         # firecracker
         # firectl
@@ -102,13 +104,16 @@
         # zls
         # zlib
 
+        pyright
+
         # Games | Game-dev
         (config.lib.nixGL.wrap pkgs.love)
         (config.lib.nixGL.wrap pkgs.aseprite)
-        # xonotic
+        (config.lib.nixGL.wrap pkgs.xonotic)
+        (config.lib.nixGL.wrap pkgs.mission-center)
 
-        # protontricks
-        # protonup
+        protontricks
+        protonup
 
         # emacsPackages.prettier
         # emacsPackages.lsp-treemacs
@@ -152,15 +157,14 @@
 
         nixfmt-rfc-style
 
-        # r2modman
-
         # woeusb
         woeusb-ng
         ventoy-full
         qbittorrent
-        opencv
+        # opencv
 
-        # unityhub
+        # (config.lib.nixGL.wrap pkgs.unityhub)
+        # bubblewrap
         # lutris
 
         ntfs3g
@@ -181,50 +185,56 @@
 
         krita
         r2modman
+
+        omnisharp-roslyn
+
+        fennel-ls
+        fnlfmt
       ]
-      ++ (with pkgs.dotnetCorePackages; [
+      ++ (with dotnetCorePackages; [
         sdk_8_0_1xx
       ])
-      # ++ (with dotnetPackages; [
-      #   Nuget
-      # ])
-      # ++ (with nerd-fonts; [
-      # fira-code
-      # droid-sans-mono
-      # sauce-code-pro
-      # jetbrains-mono
-      # go-mono
-      # _0xproto
-      #])
-      # ++ (with ocamlPackages; [
-      #   ocamlformat
-      #   ocp-indent
-      #   merlin
-      # ])
-      # ++ (with haskellPackages; [
-      #   hoogle
-      #   cabal-install
-      # ])
-      # ++ (with nodePackages_latest; [
-      #   prettier
-      # ])
       ++ (with jetbrains; [
         rider
         goland
         rust-rover
       ])
-      ++ [ (config.lib.nixGL.wrap pkgs.mission-center) ]
-      ++ [
-        fennel-ls
-        fnlfmt
-      ]
       ++ (with luajitPackages; [
         fennel
       ])
       ++ (with tree-sitter-grammars; [
-        #tree-sitter-fennel
+        # tree-sitter-fennel
         tree-sitter-c-sharp
-      ]);
+        # tree-sitter-c
+        # tree-sitter-go
+        # tree-sitter-zig
+        # tree-sitter-nix
+        # tree-sitter-lua
+        # tree-sitter-cpp
+        # tree-sitter-yaml
+        # tree-sitter-rust
+        # tree-sitter-toml
+        # tree-sitter-make
+        # tree-sitter-json
+        # tree-sitter-json5
+        # tree-sitter-jsdoc
+        # tree-sitter-glsl
+        # tree-sitter-bash
+        # tree-sitter-scala
+        # tree-sitter-gomod
+        # tree-sitter-elisp
+        # tree-sitter-cmake
+        # tree-sitter-scheme
+        # tree-sitter-python
+        # tree-sitter-graphql
+        # tree-sitter-markdown
+        # tree-sitter-typescript
+        # tree-sitter-javascript
+        # tree-sitter-commonlisp
+        # tree-sitter-dockerfile
+      ])
+    );
+
     keyboard = {
       layout = "br";
     };
@@ -298,7 +308,7 @@
         insert_final_newline = true;
         max_line_width = 78;
         indent_style = "space";
-        indent_size = 2;
+        indent_size = 4;
       };
     };
   };
@@ -333,25 +343,25 @@
 
   xdg = {
     enable = true;
-    portal = {
-      enable = false;
-      configPackages = with pkgs; [
-        xdg-desktop-portal-kde
-        xdg-desktop-portal-gtk
-      ];
-      config = {
-        common = {
-          default = [
-            "gtk"
-          ];
-        };
-      };
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-kde
-        xdg-desktop-portal-gtk
-      ];
-      xdgOpenUsePortal = true;
-    };
+    # portal = {
+    #   enable = false;
+    #   configPackages = with pkgs; [
+    #     xdg-desktop-portal-kde
+    #     xdg-desktop-portal-gtk
+    #   ];
+    #   config = {
+    #     common = {
+    #       default = [
+    #         "gtk"
+    #       ];
+    #     };
+    #   };
+    #   extraPortals = with pkgs; [
+    #     xdg-desktop-portal-kde
+    #     xdg-desktop-portal-gtk
+    #   ];
+    #   xdgOpenUsePortal = true;
+    # };
 
     desktopEntries = {
       doomEmacs = {
@@ -617,6 +627,10 @@
       };
     };
 
+    jqp = {
+      enable = true;
+    };
+
     fd = {
       enable = true;
     };
@@ -630,9 +644,24 @@
       defaultCommand = "${config.programs.fd.package}/bin/fd --type f";
       defaultOptions = [
         "--tmux center"
+        "--style full"
+        "--preview '${pkgs.bat}/bin/bat -n --color=always {}'"
       ];
+      fileWidgetCommand = "${config.programs.ripgrep.package}/bin/rg -lU '^[\x00-\x7F]*$'";
+      fileWidgetOptions = [
+        "--style full"
+        "--preview ${pkgs.bat}/bin/bat -n --color=always {}"
+      ];
+      # fileWidgetOptions = [
+      #   "--tmux center"
+      #   "--style full"
+      #   "--preview 'bat -n --color=always {}'"
+      # ];
       tmux = {
-        enableShellIntegration = false;
+        enableShellIntegration = true;
+        shellIntegrationOptions = [
+          "-p50%"
+        ];
       };
     };
 
@@ -663,7 +692,7 @@
     };
 
     pyenv = {
-      enable = false;
+      enable = true;
     };
 
     poetry = {
@@ -761,6 +790,14 @@
       #     doomdir = "${config.xdg.configHome}/doom";
       #     inherit pkgs;
       #   }).emacs;
+    };
+  };
+
+  wayland = {
+    windowManager = {
+      hyprland = {
+        enable = false;
+      };
     };
   };
 }
