@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs ? import <nixpkgs>,
   ...
 }:
@@ -9,9 +10,18 @@
     username = "garicas";
     homeDirectory = "/home/${config.home.username}";
     stateVersion = "25.05";
+    activation = {
+      fzf-tab-check = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run mkdir -p ${config.programs.zsh.oh-my-zsh.custom}/plugins
+        run test -d ${config.programs.zsh.oh-my-zsh.custom}/plugins/fzf-tab || ${pkgs.git}/bin/git clone https://github.com/Aloxaf/fzf-tab ${config.programs.zsh.oh-my-zsh.custom}/plugins/fzf-tab
+      '';
+    };
+
     packages = (
       with pkgs;
       [
+        yt-dlp
+        ffmpeg_6-full
         # android-tools
         # bash-language-server
         # cachix
@@ -108,7 +118,7 @@
 
         # Games | Game-dev
         (config.lib.nixGL.wrap pkgs.love)
-        (config.lib.nixGL.wrap pkgs.aseprite)
+        # (config.lib.nixGL.wrap pkgs.aseprite)
         (config.lib.nixGL.wrap pkgs.xonotic)
         (config.lib.nixGL.wrap pkgs.mission-center)
 
@@ -163,7 +173,7 @@
         qbittorrent
         # opencv
 
-        # (config.lib.nixGL.wrap pkgs.unityhub)
+        # (lib.nixGL.wrap pkgs.unityhub)
         # bubblewrap
         # lutris
 
@@ -240,9 +250,10 @@
     };
 
     # file = {};
-    # sessionVariables = {
-    #   STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
-    # };
+    sessionVariables = {
+      DISABLE_MAGIC_FUNCTIONS = "true";
+      # STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${config.home.homeDirectory}/.steam/root/compatibilitytools.d";
+    };
 
     shell.enableZshIntegration = true;
 
@@ -283,19 +294,19 @@
     ];
     # settings.trusted-users = [ "root" "@wheel" ];
 
-    # registry = {
-    #   microvm = {
-    #     from = {
-    #       id = "microvm";
-    #       type = "indirect";
-    #     };
-    #     to = {
-    #       owner = "astro";
-    #       repo = "microvm.nix";
-    #       type = "github";
-    #     };
-    #   };
-    # };
+    registry = {
+      microvm = {
+        from = {
+          id = "microvm";
+          type = "indirect";
+        };
+        to = {
+          owner = "astro";
+          repo = "microvm.nix";
+          type = "github";
+        };
+      };
+    };
   };
 
   editorconfig = {
@@ -450,15 +461,28 @@
       prezto = {
         enable = false;
       };
+      localVariables = {
+        DISABLE_MAGIC_FUNCTIONS = true;
+      };
+      # initExtraFirst = '''';
+      initExtra = ''
+        bindkey  "^[[1~"   beginning-of-line
+        bindkey  "^[[4~"   end-of-line
+      '';
       oh-my-zsh = {
         enable = true;
         theme = "gentoo";
         plugins = [
           "git"
           "git-auto-fetch"
-          #          "history-substring-search"
-          "zsh-interactive-cd"
+          "fzf-tab"
+          # "history-substring-search"
+          # "zsh-interactive-cd"
         ];
+        custom = "$HOME/.omz/custom";
+        extraConfig = ''
+          zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+        '';
       };
     };
 
@@ -469,7 +493,7 @@
       keyMode = "vi";
       mouse = true;
       shell = "${pkgs.zsh}/bin/zsh";
-      terminal = "xterm-256color";
+      terminal = "alacritty";
       extraConfig = ''
         # reload config file (change file location to your the tmux.conf you want to use)
         bind r source-file ${config.xdg.configHome}/tmux/tmux.conf
@@ -616,15 +640,15 @@
 
     jq = {
       enable = true;
-      colors = {
-        null = "1;30";
-        false = "0;31";
-        true = "0;32";
-        numbers = "0;36";
-        strings = "0;33";
-        arrays = "1;35";
-        objects = "1;37";
-      };
+      # colors = {
+      # null = "1;30";
+      # false = "0;31";
+      # true = "0;32";
+      # numbers = "0;36";
+      # strings = "0;33";
+      # arrays = "1;35";
+      # objects = "1;37";
+      # };
     };
 
     jqp = {
@@ -656,6 +680,9 @@
       #   "--tmux center"
       #   "--style full"
       #   "--preview 'bat -n --color=always {}'"
+      # ];
+      # changeDirWidgetOptions = [
+      #     "--preview 'tree -C {}'"
       # ];
       tmux = {
         enableShellIntegration = true;
@@ -704,12 +731,12 @@
     };
 
     pylint = {
-      enable = true;
+      enable = false;
       settings = { };
     };
 
     ruff = {
-      enable = true;
+      enable = false;
       settings = {
         line-length = 80;
         indent-width = 4;
