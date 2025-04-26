@@ -22,6 +22,7 @@
       [
         yt-dlp
         ffmpeg_6-full
+        protonup-qt
         # android-tools
         # bash-language-server
         # cachix
@@ -32,9 +33,13 @@
         # cmake
         # ansible
         # dockfmt
+        sbcl
+        pe-bear
+        wxhexeditor
+        intentrace
         # containerd
         # coursier
-        # crosvm
+        crosvm
         # curl
         delta
         devenv
