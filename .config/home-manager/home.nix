@@ -23,8 +23,9 @@
         yt-dlp
         ffmpeg_6-full
         protonup-qt
+        hyprshot
         # android-tools
-        # bash-language-server
+        bash-language-server
         # cachix
         # c3c
         # llvmPackages_19.clang-tools
@@ -34,12 +35,13 @@
         # ansible
         # dockfmt
         sbcl
-        pe-bear
-        wxhexeditor
-        intentrace
+        coq
+        # pe-bear
+        # wxhexeditor
+        # intentrace
         # containerd
         # coursier
-        crosvm
+        # crosvm
         # curl
         delta
         devenv
@@ -82,16 +84,16 @@
         # openssl
         # pinentry-tty
         pinentry-curses
-        pinentry-rofi
-        python312Full
+        # pinentry-rofi
+        # python312Full
         # qbe
-        rpi-imager
+        # rpi-imager
         shfmt
         shellcheck
         remmina
         rustup
-        mitscheme
-        guile
+        # mitscheme
+        # guile
         # rust-analyzer
         # sbcl
         # scrcpy
@@ -105,6 +107,13 @@
         unrar
         valgrind
         wakatime-cli
+        minikube
+        kubectl
+        docker-language-server
+        docker-compose-language-service
+        dockerfile-language-server-nodejs
+        cachix
+        prettierd
         # wasm-pack
         # wasmer
         # wasmtime
@@ -112,20 +121,20 @@
         # wasm-tools
         # waypipe
         # wget
-        # yaml-language-server
+        yaml-language-server
         # yarn
         # yazi
         # zig
         # zls
         # zlib
-
-        pyright
+        # pyright
 
         # Games | Game-dev
         (config.lib.nixGL.wrap pkgs.love)
+        (config.lib.nixGL.wrap pkgs.godot)
         # (config.lib.nixGL.wrap pkgs.aseprite)
-        (config.lib.nixGL.wrap pkgs.xonotic)
-        (config.lib.nixGL.wrap pkgs.mission-center)
+        # (config.lib.nixGL.wrap pkgs.xonotic)
+        # (config.lib.nixGL.wrap pkgs.mission-center)
 
         protontricks
         protonup
@@ -145,15 +154,15 @@
         noto-fonts-cjk-sans
         noto-fonts-cjk-serif
 
-        glslang
+        # glslang
         # shaderc
         nixpkgs-fmt
         # cljfmt
         # scalafmt
         # multimarkdown
         # markdown-oxide
-        python312Packages.pip
-        python312Packages.grip
+        # python312Packages.pip
+        # python312Packages.grip
         # graphviz
         # ocamlPackages.ocamlformat
 
@@ -174,7 +183,7 @@
 
         # woeusb
         woeusb-ng
-        ventoy-full
+        #ventoy-full
         qbittorrent
         # opencv
 
@@ -205,49 +214,56 @@
 
         fennel-ls
         fnlfmt
+
+        obsidian
       ]
-      ++ (with dotnetCorePackages; [
-        sdk_8_0_1xx
-      ])
+      # ++ (with dotnetCorePackages; [
+      #   sdk_8_0_1xx
+      # ])
       ++ (with jetbrains; [
         rider
-        goland
-        rust-rover
+        #  goland
+        #  rust-rover
       ])
       ++ (with luajitPackages; [
         fennel
       ])
-      ++ (with tree-sitter-grammars; [
-        # tree-sitter-fennel
-        tree-sitter-c-sharp
-        # tree-sitter-c
-        # tree-sitter-go
-        # tree-sitter-zig
-        # tree-sitter-nix
-        # tree-sitter-lua
-        # tree-sitter-cpp
-        # tree-sitter-yaml
-        # tree-sitter-rust
-        # tree-sitter-toml
-        # tree-sitter-make
-        # tree-sitter-json
-        # tree-sitter-json5
-        # tree-sitter-jsdoc
-        # tree-sitter-glsl
-        # tree-sitter-bash
-        # tree-sitter-scala
-        # tree-sitter-gomod
-        # tree-sitter-elisp
-        # tree-sitter-cmake
-        # tree-sitter-scheme
-        # tree-sitter-python
-        # tree-sitter-graphql
-        # tree-sitter-markdown
-        # tree-sitter-typescript
-        # tree-sitter-javascript
-        # tree-sitter-commonlisp
-        # tree-sitter-dockerfile
-      ])
+      # ++ (
+      #   with tree-sitter-grammars;
+      #   (treesit-grammars.with-grammars (
+      #     grammars: with grammars; [
+      #       tree-sitter-fennel
+      #       tree-sitter-c-sharp
+      #       tree-sitter-c
+      #       tree-sitter-go
+      #       tree-sitter-zig
+      #       tree-sitter-nix
+      #       tree-sitter-lua
+      #       tree-sitter-cpp
+      #       tree-sitter-yaml
+      #       tree-sitter-rust
+      #       tree-sitter-toml
+      #       tree-sitter-make
+      #       tree-sitter-json
+      #       tree-sitter-json5
+      #       tree-sitter-jsdoc
+      #       tree-sitter-glsl
+      #       tree-sitter-bash
+      #       tree-sitter-scala
+      #       tree-sitter-gomod
+      #       tree-sitter-elisp
+      #       tree-sitter-cmake
+      #       tree-sitter-scheme
+      #       tree-sitter-python
+      #       tree-sitter-graphql
+      #       tree-sitter-markdown
+      #       tree-sitter-typescript
+      #       tree-sitter-javascript
+      #       tree-sitter-commonlisp
+      #       tree-sitter-dockerfile
+      #     ]
+      #   ))
+      # )
     );
 
     keyboard = {
@@ -266,6 +282,7 @@
       "${config.xdg.configHome}/emacs/bin"
       "${config.home.homeDirectory}/.local/bin"
       "${config.home.homeDirectory}/${config.programs.go.goBin}"
+      "${config.home.homeDirectory}/.cargo/bin"
     ];
   };
 
@@ -285,19 +302,32 @@
 
     gpg-agent = {
       enable = true;
-      extraConfig = ''
-        pinentry-program ${pkgs.pinentry-curses}/bin/pinentry-curses
-      '';
+      pinentry = {
+        package = pkgs.pinentry-curses;
+        program = "pinentry-curses";
+      };
+      # extraConfig = ''
+      #   pinentry-program ${pkgs.pinentry-curses}/bin/pinentry-curses
+      # '';
     };
   };
 
   nix = {
     package = pkgs.nix;
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-    # settings.trusted-users = [ "root" "@wheel" ];
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      trusted-users = [
+        "root"
+        "garicas"
+        "@wheel"
+      ];
+
+      # trusted-public-keys = "lambda-core.cachix.org-1:0XbMbg3tgXa9r/og0Eeg/4NmTUlsH8FhaVAmgUS2c5w=";
+      # trusted-substituters = "https://lambda-core.cachix.org";
+    };
 
     registry = {
       microvm = {
@@ -410,12 +440,46 @@
         terminal = false;
         type = "Application";
       };
+
+      gameMaker = {
+        name = "Game Maker";
+        genericName = "Game Development";
+        categories = [
+          "Development"
+        ];
+        exec = "/opt/GameMaker-Beta/x86_64/GameMaker";
+        icon = "/opt/GameMaker-Beta/GameMaker.png";
+        # mimeType = [
+        #   "text/english"
+        #   "text/plain"
+        #   "text/x-makefile"
+        #   "text/x-c++hdr"
+        #   "text/x-c++src"
+        #   "text/x-chdr"
+        #   "text/x-csrc"
+        #   "text/x-java"
+        #   "text/x-moc"
+        #   "text/x-pascal"
+        #   "text/x-tcl"
+        #   "text/x-tex"
+        #   "application/x-shellscript"
+        #   "text/x-c"
+        #   "text/x-c++"
+        # ];
+        startupNotify = true;
+        terminal = false;
+        type = "Application";
+      };
     };
   };
 
   programs = {
 
     home-manager = {
+      enable = true;
+    };
+
+    nh = {
       enable = true;
     };
 
@@ -438,12 +502,6 @@
       scdaemonSettings = {
         disable-ccid = false;
       };
-      settings = {
-        # allow-emacs-pinentry = true;
-      };
-      #     publicKeys = {
-
-      #      };
     };
 
     zsh = {
@@ -470,7 +528,7 @@
         DISABLE_MAGIC_FUNCTIONS = true;
       };
       # initExtraFirst = '''';
-      initExtra = ''
+      initContent = ''
         bindkey  "^[[1~"   beginning-of-line
         bindkey  "^[[4~"   end-of-line
       '';
@@ -760,7 +818,7 @@
     };
 
     ranger = {
-      enable = true;
+      enable = false;
       plugins = [
         {
           name = "zoxide";
@@ -804,6 +862,14 @@
       ];
     };
 
+    halloy = {
+      enable = true;
+    };
+
+    havoc = {
+      enable = true;
+    };
+
     spotify-player = {
       enable = false;
     };
@@ -816,6 +882,14 @@
     emacs = {
       enable = true;
       package = pkgs.emacs30;
+      extraPackages =
+        epkgs: with epkgs; [
+          treesit-auto
+          tree-sitter
+          tree-sitter-langs
+          tree-sitter-indent
+          tree-sitter-ispell
+        ];
       # package =
       #   (import ./emacs.nix {
       #     emacsdir = "${config.xdg.configHome}/emacs";
